@@ -1,0 +1,17 @@
+# Hyper-parameters used for the paper.
+# Please tune the following hyper-parameters on your own machine to get reasonable performance.
+
+Swimmer-v2:
+  env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 2e6
+  policy: 'MlpPolicy'
+  noise_type: 'adaptive-param'
+  noise_std: 0.25
+  memory_limit: 100000
+  normalize_observations: True
+  normalize_returns: False
+  gamma: 0.999
+  #actor_lr: !!float 0.000527
+  batch_size: 256
+  random_exploration: 0.0
+  policy_kwargs: 'dict(layer_norm=True)'

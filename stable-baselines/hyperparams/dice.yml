@@ -1,0 +1,142 @@
+HalfCheetah-v2:
+  env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  #buffer_size: 4000
+  #learning_starts: 1000
+  buffer_size: 400000
+  learning_starts: 10000
+  #learning_starts: 10000
+  noise_type: 'normal'
+  noise_std: 0.1
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 1e-4
+  v_learning_rate: !!float 3e-4
+  log_mmd_min: !!float -5
+  log_mmd_max: !!float 0
+  kernel_dim: 10
+  train_freq: 1000
+  gradient_steps: 1000
+  policy_kwargs: "dict(layers=[400, 300])"
+
+
+Ant-v2:
+  env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 2e5
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  #noise_type: 'normal'
+  #noise_std: 0.2
+  learning_starts: 1000
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 1e-3
+  v_learning_rate: !!float 1e-3
+  kernel_dim: 20
+  log_mmd_min: !!float -5
+  log_mmd_max: !!float 1
+  train_freq: 1
+  gradient_steps: 1
+  #train_freq: 100
+  #gradient_steps: 10
+  policy_kwargs: "dict(layers=[400, 300])"
+
+Hopper-v2:
+  #env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 2e5
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  #noise_type: 'normal'
+  #noise_std: 0.2
+  learning_starts: 1000
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 3e-4
+  #v_learning_rate: !!float 3e-4
+  v_learning_rate: !!float 1e-3
+  kernel_dim: 20
+  log_mmd_min: !!float -5
+  log_mmd_max: !!float 1
+  train_freq: 1
+  gradient_steps: 1
+  policy_kwargs: "dict(layers=[400, 300])"
+
+Walker2d-v2:
+  n_timesteps: !!float 2e5
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  #noise_type: 'normal'
+  #noise_std: 0.1
+  #noise_std_final: 0.05
+  learning_starts: 1000
+  kernel_dim: 10
+  log_mmd_min: !!float -5
+  log_mmd_max: !!float 0
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 3e-4
+  #v_learning_rate: !!float 3e-4
+  v_learning_rate: !!float 1e-3
+  train_freq: 1
+  gradient_steps: 1
+  policy_kwargs: "dict(layers=[400, 300])"
+
+Humanoid-v2:
+  #env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 2e5
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  noise_type: 'normal'
+  noise_std: 0.1
+  learning_starts: 1000
+  batch_size: 100
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 3e-4
+  #v_learning_rate: !!float 3e-4
+  v_learning_rate: !!float 1e-3
+  train_freq: 1
+  gradient_steps: 1
+  policy_kwargs: "dict(layers=[400, 300])"
+
+Reacher-v2:
+  #env_wrapper: utils.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  noise_type: 'normal'
+  noise_std: 0.1
+  learning_starts: 1000
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 3e-4
+  #v_learning_rate: !!float 3e-4
+  v_learning_rate: !!float 1e-3
+  train_freq: 1
+  gradient_steps: 1
+  policy_kwargs: "dict(layers=[400, 300])"
+
+
+InvertedDoublePendulum-v2:
+  n_timesteps: !!float 1e6
+  policy: 'MlpPolicy'
+  gamma: 0.99
+  buffer_size: 4000
+  #noise_type: 'normal'
+  #noise_std: 0.1
+  learning_starts: 1000
+  batch_size: 256
+  learning_rate: !!float 1e-3
+  pi_learning_rate: !!float 3e-4
+  #v_learning_rate: !!float 3e-4
+  v_learning_rate: !!float 1e-3
+  train_freq: 1
+  gradient_steps: 1
+  policy_kwargs: "dict(layers=[400, 300])"
+
