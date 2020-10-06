@@ -2,22 +2,17 @@ import seaborn as sns
 import argparse
 import matplotlib.pyplot as plt
 sns.set()
-import collections
 current_palette = sns.color_palette()
 sns.palplot(current_palette)
 import pandas as pd
 import numpy as np
 import os
-from settings import PATH_PREFIX as local_path_prefix
 from settings import CONFIGS
 
-path_prefix = '/mnt/hdd2/judy/reward_shaping/baselines' 
 
 legend_loc = "upper left"
 def plot_results_game(experimental_data, title, game, agent_name, num_steps_per_iteration, num_iter, savefig=False, legend_loc=legend_loc, bc_file=None):
-#     experimental_data['iteration'] = experimental_data['iteration'].apply(lambda x: x*num_steps_per_iteration)
     fig, ax = plt.subplots(figsize=(15,10))
-#     ax.ticklabel_format(style='sci')
     sns.tsplot(data=experimental_data, time='iteration', unit='run_number',
              condition='agent', value='train_episode_reward', ax=ax)
     ### plot demonstration and BC baseline
@@ -131,63 +126,55 @@ if __name__ == '__main__':
     parser.add_argument('--rewards', type=str, choices=['dense', 'sparse'], default='dense', help='Environment Rewards')
     parser.add_argument('--quality', type=str, choices=['near', 'sub'], default='sub', help='Environment Rewards')
     parser.add_argument('--legends', type=str, default='gail-dac-subopt,gail-lfd-BC-adaptive-subopt', help="Methods to plot, split by comma")
+    parser.add_argument('--log-dir', help='Log directory', type=str, default='/tmp/logs') # required=True,
+
     args = parser.parse_args()
 
 
-experimental_datas = []
+    experimental_datas = []
 
-timesteps = args.timesteps 
-num_steps_per_iteration = args.steps 
-num_iter = int(timesteps/num_steps_per_iteration)
+    timesteps = args.timesteps
+    num_steps_per_iteration = args.steps
+    num_iter = int(timesteps/num_steps_per_iteration)
 
-#env = 'Hopper-v2'
-#env = 'CartPole-v1'
-#legends = {0: 'GAIL', 1: 'POfD', 2:'TRPO', 3: 'SWITCH'}
-#algos = ['trpo','trpo', 'trpo', 'trpo']
-algo = args.algo 
-env=args.env 
-seeds=[i + args.shift for i in range(1, args.seeds + 1)] # dense, near-optimal
-if args.rewards == 'dense':
-    setting = 'Dense-{}Opt'.format(args.quality)
-else:
-    setting = 'Sparse-{}Opt'.format(args.quality)
+    #env = 'Hopper-v2'
+    #env = 'CartPole-v1'
+    #legends = {0: 'GAIL', 1: 'POfD', 2:'TRPO', 3: 'SWITCH'}
+    #algos = ['trpo','trpo', 'trpo', 'trpo']
+    algo = args.algo
+    env=args.env
+    seeds=[i + args.shift for i in range(1, args.seeds + 1)] # dense, near-optimal
+    if args.rewards == 'dense':
+        setting = 'Dense-{}Opt'.format(args.quality)
+    else:
+        setting = 'Sparse-{}Opt'.format(args.quality)
 
-if 'dual' in algo:
-    setting = setting + '-Dual'
-
-
-legends = [l.strip() for l in args.legends.split(',')]
-for legend in legends:
-    task = legend
-    algo = args.algo 
-    if 'bcq' in task:
-        algo = 'bcq'
-    if 'dac' in task:
-        algo = 'dac'
-    if 'dual' in task:
-        algo = 'dualsail'
-    if 'sdice' in task:
-        algo = 'sdice'
-    if 'sac' in task:
-        algo = 'sac'
-    if 'dice' in task and 'sdice' not in task:
-        algo = 'dice'
-    if 'trpo' in task:
-        algo = 'trpo'
-    path = os.path.join(path_prefix, task, algo, env)
-    print(path)
-    experimental_data = read_log(env, legend, path, num_steps_per_iteration, num_iter, seeds, warmup=args.warmup)
-    experimental_datas.append(experimental_data)
+    if 'dual' in algo:
+        setting = setting + '-Dual'
 
 
-short_legends = [i.replace('-LFD', '').replace('-GAIL','') for i in legends]
-#figure_name = env.split('-')[0] + '-{}-'.format(setting) + '-'.join(short_legends)
-#figure_name = env.split('-')[0] + short_legends[-1].split('-')[-1]
-figure_name = env 
-all_agents_data = pd.concat(experimental_datas, axis=0)
-savefig = True
-bc_path = os.path.join(path_prefix, 'eval-bc-episode-{}'.format(args.episodes), args.algo, env) 
-bc_file = os.path.join(bc_path, 'rank1', 'agent0.monitor.csv')
-if not os.path.isfile(bc_file):
-    bc_file = None
-experimental_datas = plot_results_game(all_agents_data, figure_name, env, legends, num_steps_per_iteration, num_iter, savefig, bc_file=bc_file)
+    legends = [l.strip() for l in args.legends.split(',')]
+    for legend in legends:
+        task = legend
+        algo = args.algo
+        if 'bcq' in task:
+            algo = 'bcq'
+        if 'dac' in task:
+            algo = 'dac'
+        if 'trpo' in task:
+            algo = 'trpo'
+        path = os.path.join(args.log_dir, task, algo, env)
+        print(path)
+        experimental_data = read_log(env, legend, path, num_steps_per_iteration, num_iter, seeds, warmup=args.warmup)
+        experimental_datas.append(experimental_data)
+
+
+    short_legends = [i.replace('-LFD', '').replace('-GAIL','') for i in legends]
+    figure_name = env
+    all_agents_data = pd.concat(experimental_datas, axis=0)
+    savefig = True
+    bc_path = os.path.join(args.log_dir, 'eval-bc-episode-{}'.format(args.episodes), args.algo, env)
+    bc_file = os.path.join(bc_path, 'rank1', 'agent0.monitor.csv')
+    if not os.path.isfile(bc_file):
+        bc_file = None
+    experimental_datas = plot_results_game(all_agents_data, figure_name, env, legends, num_steps_per_iteration, num_iter, savefig, bc_file=bc_file)
